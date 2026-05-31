@@ -39,19 +39,62 @@
 <body class="text-gray-800 antialiased bg-white">
 
     <!-- Navigation -->
-    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center relative z-50">
         <a href="/" class="text-2xl font-bold text-brand-600 flex items-center gap-3">
             <img src="assets/logo.svg" alt="SoSo Logo" class="w-10 h-10">
             SoSo
         </a>
-        <div class="hidden md:flex space-x-6">
+        
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex space-x-6 items-center">
             <a href="features.html" class="text-gray-600 hover:text-brand-600 transition">Features</a>
             <a href="how-it-works.html" class="text-gray-600 hover:text-brand-600 transition">How it Works</a>
         </div>
-        <a href="#signup" class="bg-brand-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-500 transition shadow-lg shadow-brand-500/30">
+        <div class="hidden md:block">
+            <a href="#signup" class="bg-brand-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-500 transition shadow-lg shadow-brand-500/30">
+                Get Started
+            </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden text-gray-600 focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-40 hidden flex-col items-center justify-center space-y-8 text-xl">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-gray-600 focus:outline-none">
+            <i class="fa-solid fa-xmark text-3xl"></i>
+        </button>
+        <a href="features.html" class="text-gray-800 font-semibold">Features</a>
+        <a href="how-it-works.html" class="text-gray-800 font-semibold">How it Works</a>
+        <a href="#signup" class="bg-brand-600 text-white px-8 py-3 rounded-full font-bold shadow-lg mt-4">
             Get Started
         </a>
-    </nav>
+    </div>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closeMenu = () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        };
+
+        closeMenuBtn.addEventListener('click', closeMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+    </script>
 
     <!-- Hero Section -->
     <section class="hero-pattern py-20 lg:py-32">
