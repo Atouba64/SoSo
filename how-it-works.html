@@ -59,13 +59,13 @@
     </nav>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-white z-40 hidden flex-col items-center justify-center space-y-8 text-xl">
-        <button id="close-menu-btn" class="absolute top-6 right-6 text-gray-600 focus:outline-none">
-            <i class="fa-solid fa-xmark text-3xl"></i>
+    <div id="mobile-menu" class="fixed inset-0 bg-white/98 backdrop-blur-md z-50 hidden flex-col items-center justify-center space-y-8 text-2xl transition-all duration-300 opacity-0 transform translate-y-4">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-gray-900 focus:outline-none p-2">
+            <i class="fa-solid fa-xmark text-4xl"></i>
         </button>
-        <a href="features.html" class="text-gray-800 font-semibold">Features</a>
-        <a href="how-it-works.html" class="text-brand-600 font-semibold">How it Works</a>
-        <a href="/#signup" class="bg-brand-600 text-white px-8 py-3 rounded-full font-bold shadow-lg mt-4">
+        <a href="features.html" class="text-gray-800 font-bold hover:text-brand-600">Features</a>
+        <a href="how-it-works.html" class="text-gray-800 font-bold hover:text-brand-600">How it Works</a>
+        <a href="/#signup" class="bg-brand-600 text-white px-10 py-4 rounded-full font-bold shadow-xl mt-4 text-xl">
             Get Started
         </a>
     </div>
@@ -78,13 +78,20 @@
 
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.remove('hidden');
-            mobileMenu.classList.add('flex');
+            // Small delay to allow display:block to apply before animating opacity
+            setTimeout(() => {
+                mobileMenu.classList.remove('opacity-0', 'translate-y-4');
+                mobileMenu.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
             document.body.style.overflow = 'hidden';
         });
 
         const closeMenu = () => {
-            mobileMenu.classList.add('hidden');
-            mobileMenu.classList.remove('flex');
+            mobileMenu.classList.remove('opacity-100', 'translate-y-0');
+            mobileMenu.classList.add('opacity-0', 'translate-y-4');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
             document.body.style.overflow = 'auto';
         };
 
@@ -101,8 +108,8 @@
 
         <div class="space-y-12">
             <!-- Step 1 -->
-            <div class="flex flex-col md:flex-row gap-8 items-start">
-                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">1</div>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start text-center md:text-left">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold mx-auto md:mx-0">1</div>
                 <div>
                     <h3 class="text-2xl font-bold mb-3">Create or Join a Group</h3>
                     <p class="text-gray-600 leading-relaxed">
@@ -112,8 +119,8 @@
             </div>
 
             <!-- Step 2 -->
-            <div class="flex flex-col md:flex-row gap-8 items-start">
-                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">2</div>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start text-center md:text-left">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold mx-auto md:mx-0">2</div>
                 <div>
                     <h3 class="text-2xl font-bold mb-3">Automatic Contributions</h3>
                     <p class="text-gray-600 leading-relaxed">
@@ -123,8 +130,8 @@
             </div>
 
             <!-- Step 3 -->
-            <div class="flex flex-col md:flex-row gap-8 items-start">
-                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">3</div>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start text-center md:text-left">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold mx-auto md:mx-0">3</div>
                 <div>
                     <h3 class="text-2xl font-bold mb-3">The Smart Payout</h3>
                     <p class="text-gray-600 leading-relaxed">
@@ -134,8 +141,8 @@
             </div>
 
             <!-- Step 4 -->
-            <div class="flex flex-col md:flex-row gap-8 items-start">
-                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">4</div>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start text-center md:text-left">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold mx-auto md:mx-0">4</div>
                 <div>
                     <h3 class="text-2xl font-bold mb-3">Liquidity Buffer & Credit Building</h3>
                     <p class="text-gray-600 leading-relaxed">
