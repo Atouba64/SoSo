@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String   @id @default(uuid())
+  email                 String   @unique
+  fullName              String
+  kycVerified           Boolean  @default(false)
+  creditScore           Int      @default(0)
+  historicalSuccessRate Float    @default(0.0) // 0 to 1
+  totalCollateralStaked Float    @default(0.0)
+  defaulted             Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  groupMemberships      GroupMember[]
+  bids                  Bid[]
+  payouts               Payout[]
+  transactions          Transaction[]
+}
+
+model Group {
+  id                    String   @id @default(uuid())
+  name                  String
+  cycleAmount           Float
+  rotationMode          RotationMode
+  solidarityFundActive  Boolean  @default(false)
+  solidarityFundBalance Float    @default(0.0)
+  liquidityBufferUsed   Float    @default(0.0)
+  currentCycle          Int      @default(1)
+  totalCycles           Int
+  createdAt             DateTime @default(now())
+
+  members               GroupMember[]
+  cycles                Cycle[]
+}
+
+enum RotationMode {
+  FIXED
+  BIDDING
+  LOTTERY
+  GUARANTOR
+}
+
+model GroupMember {
+  id        String   @id @default(uuid())
+  userId    String
+  groupId   String
+  role      GroupRole @default(MEMBER)
+  joinedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  group     Group    @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+}
+
+enum GroupRole {
+  CREATOR
+  GUARANTOR
+  MEMBER
+}
+
+model Cycle {
+  id              String   @id @default(uuid())
+  groupId         String
+  cycleNumber     Int
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  group           Group    @relation(fields: [groupId], references: [id])
+  bids            Bid[]
+  payout          Payout?
+  transactions    Transaction[]
+}
+
+model Bid {
+  id              String   @id @default(uuid())
+  cycleId         String
+  userId          String
+  discountOffered Float
+  submittedAt     DateTime @default(now())
+
+  cycle           Cycle    @relation(fields: [cycleId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+}
+
+model Payout {
+  id                    String   @id @default(uuid())
+  cycleId               String   @unique
+  userId                String
+  payoutAmount          Float
+  dividendPerMember     Float?
+  solidarityContribution Float?
+  processedAt           DateTime @default(now())
+
+  cycle                 Cycle    @relation(fields: [cycleId], references: [id])
+  user                  User     @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      String
+  cycleId     String
+  amount      Float
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+  cycle       Cycle    @relation(fields: [cycleId], references: [id])
+}
+
+enum TransactionType {
+  CONTRIBUTION
+  PAYOUT
+  DIVIDEND
+  LATE_FEE
+  COLLATERAL_DEPOSIT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
