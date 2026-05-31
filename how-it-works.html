@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - SoSo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased bg-white">
+
+    <!-- Navigation -->
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center bg-white shadow-sm rounded-b-2xl mb-12">
+        <a href="/" class="text-2xl font-bold text-brand-600 flex items-center gap-3">
+            <img src="assets/logo.svg" alt="SoSo Logo" class="w-10 h-10">
+            SoSo
+        </a>
+        <div class="hidden md:flex space-x-6">
+            <a href="features.html" class="text-gray-600 hover:text-brand-600 transition">Features</a>
+            <a href="how-it-works.html" class="text-brand-600 font-semibold border-b-2 border-brand-600 pb-1">How it Works</a>
+        </div>
+        <a href="/#waitlist" class="bg-brand-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-500 transition">
+            Join Beta
+        </a>
+    </nav>
+
+    <!-- Content -->
+    <section class="container mx-auto px-6 py-12 max-w-4xl">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">How SoSo Works</h1>
+            <p class="text-xl text-gray-600">The power of a community savings club, secured by algorithms.</p>
+        </div>
+
+        <div class="space-y-12">
+            <!-- Step 1 -->
+            <div class="flex flex-col md:flex-row gap-8 items-start">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">1</div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">Create or Join a Group</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Start a group and invite your friends and family from anywhere in the world. Set the cycle length (weekly, monthly) and the contribution amount. Everyone goes through our secure identity verification (KYC) to ensure the community is safe.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex flex-col md:flex-row gap-8 items-start">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">2</div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">Automatic Contributions</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Link your bank account, card, or Mobile Money wallet. SoSo automatically deducts the agreed amount when the cycle starts. No more chasing people down for cash or sending manual wire transfers.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex flex-col md:flex-row gap-8 items-start">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">3</div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">The Smart Payout</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Depending on your group's chosen mode (Bidding, Lottery, or Fixed Schedule), the algorithm determines the receiver. The pooled funds are instantly transferred from the secure smart escrow directly to the winner's account.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex flex-col md:flex-row gap-8 items-start">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl font-bold">4</div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">Liquidity Buffer & Credit Building</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        If someone's payment fails, SoSo's Liquidity Pool covers it instantly, so the receiver gets their full pot on time. The late member settles with SoSo directly. As you successfully complete rotations, we report your positive behavior to credit bureaus, building your formal credit score.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-16 text-center">
+            <a href="/#waitlist" class="inline-block bg-gray-900 text-white px-8 py-4 rounded-full font-bold hover:bg-gray-800 transition">
+                Start Saving Today
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-100 py-8 text-center text-gray-500 mt-12">
+        <div class="container mx-auto px-6">
+            <p>&copy; 2026 SoSo - Global Community Savings. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
