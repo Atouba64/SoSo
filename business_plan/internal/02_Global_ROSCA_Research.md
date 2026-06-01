@@ -1,5 +1,7 @@
 # Global ROSCA Research: The Landscape of Trust-Based Savings
 
+> **Implementation:** SoSo does not ship 12 separate apps. All traditions map to one engine with composable options. See [`docs/UNIFIED_ROSCA_MODEL.md`](../../docs/UNIFIED_ROSCA_MODEL.md) and cultural presets in the API (`GET /api/v1/groups/presets`).
+
 A Rotating Savings and Credit Association (ROSCA) is a peer-to-peer banking and lending system where a group of individuals agree to contribute a fixed amount of money at regular intervals. The total collected (the "pot") is then given to one member of the group. This rotates until every member has received the pot.
 
 This mechanism exists globally, particularly in regions with historically low bankarization or where traditional credit is inaccessible, expensive, or culturally inappropriate. 

@@ -1,4 +1,5 @@
-import { User, Group } from './interfaces';
+import { User } from './interfaces';
+import { GroupConfig } from './GroupConfig';
 
 export class TrustEngine {
     /**
@@ -29,15 +30,16 @@ export class TrustEngine {
     /**
      * Determines if a user is eligible to join a specific group based on risk profiling.
      */
-    public static isEligibleForGroup(user: User, group: Group): boolean {
+    public static isEligibleForGroup(user: User, group: GroupConfig): boolean {
         const trustScore = this.calculateTrustScore(user);
-        
-        // Guarantor mode requires high collateral or impeccable trust
-        if (group.rotationMode === 'GUARANTOR') {
-            return trustScore > 800 || user.totalCollateralStaked >= group.cycleAmount * group.totalCycles;
+
+        if (group.addons.guarantorFirstPot && group.addons.guarantorUserId === user.id) {
+            return (
+                trustScore > 800 ||
+                user.totalCollateralStaked >= group.cycleAmount * group.totalCycles
+            );
         }
 
-        // Basic eligibility for standard groups
         return trustScore >= 500 && !user.defaulted;
     }
 

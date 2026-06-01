@@ -13,7 +13,7 @@ model User {
   fullName              String
   kycVerified           Boolean  @default(false)
   creditScore           Int      @default(0)
-  historicalSuccessRate Float    @default(0.0) // 0 to 1
+  historicalSuccessRate Float    @default(0.0)
   totalCollateralStaked Float    @default(0.0)
   defaulted             Boolean  @default(false)
   createdAt             DateTime @default(now())
@@ -23,22 +23,104 @@ model User {
   bids                  Bid[]
   payouts               Payout[]
   transactions          Transaction[]
+  loans                 InternalLoan[]
 }
 
 model Group {
   id                    String   @id @default(uuid())
   name                  String
   cycleAmount           Float
-  rotationMode          RotationMode
-  solidarityFundActive  Boolean  @default(false)
-  solidarityFundBalance Float    @default(0.0)
-  liquidityBufferUsed   Float    @default(0.0)
-  currentCycle          Int      @default(1)
   totalCycles           Int
+  currentCycle          Int      @default(1)
+
+  /// Unified model (replaces rotationMode-only design)
+  culturalPreset        CulturalPreset?
+  payoutSelection       PayoutSelection @default(FIXED_ORDER)
+  poolStructure         PoolStructure   @default(ROTATING)
+  cycleFrequency        CycleFrequency  @default(MONTHLY)
+  purpose               GroupPurpose    @default(GENERAL)
+  payoutType            PayoutType      @default(CASH)
+  goalDescription       String?
+
+  targetPoolAmount      Float?
+  accumulatedBalance    Float    @default(0.0)
+
+  solidarityFundActive  Boolean  @default(false)
+  solidarityFundRate    Float    @default(0.02)
+  solidarityFundBalance Float    @default(0.0)
+
+  loanPoolActive        Boolean  @default(false)
+  loanPoolReserveRate   Float    @default(0.05)
+  loanPoolBalance       Float    @default(0.0)
+
+  foremanUserId         String?
+  foremanFeeActive      Boolean  @default(false)
+  foremanFeeRate        Float    @default(0.05)
+
+  collectorFeeActive    Boolean  @default(false)
+  collectorFeeDays      Int      @default(1)
+
+  guarantorFirstPot     Boolean  @default(false)
+  guarantorUserId       String?
+
+  penaltiesEnabled      Boolean  @default(false)
+  latePenaltyAmount     Float    @default(10.0)
+
+  rotationOrder         Json?
+  membersWhoReceivedPot Json     @default("[]")
+
+  liquidityBufferUsed   Float    @default(0.0)
+
+  /// @deprecated — use payoutSelection + addons; kept for migration
+  rotationMode          RotationMode?
+
   createdAt             DateTime @default(now())
 
   members               GroupMember[]
   cycles                Cycle[]
+  loans                 InternalLoan[]
+}
+
+enum CulturalPreset {
+  LIKELEMBA
+  BAMILEKE_TONTINE
+  CHIT_FUND
+  HUI
+  ARISAN
+  SUSU
+  STOKVEL
+  CUSTOM
+}
+
+enum PayoutSelection {
+  FIXED_ORDER
+  AUCTION
+  LOTTERY
+}
+
+enum PoolStructure {
+  ROTATING
+  ACCUMULATING
+}
+
+enum CycleFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum GroupPurpose {
+  GENERAL
+  BURIAL
+  GROCERY
+  INVESTMENT
+  BUSINESS
+  EDUCATION
+}
+
+enum PayoutType {
+  CASH
+  GOAL
 }
 
 enum RotationMode {
@@ -49,14 +131,14 @@ enum RotationMode {
 }
 
 model GroupMember {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
   groupId   String
   role      GroupRole @default(MEMBER)
-  joinedAt  DateTime @default(now())
+  joinedAt  DateTime  @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
-  group     Group    @relation(fields: [groupId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  group     Group     @relation(fields: [groupId], references: [id])
 
   @@unique([userId, groupId])
 }
@@ -64,17 +146,21 @@ model GroupMember {
 enum GroupRole {
   CREATOR
   GUARANTOR
+  FOREMAN
+  TREASURER
+  CENSOR
   MEMBER
 }
 
 model Cycle {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   groupId         String
   cycleNumber     Int
-  startedAt       DateTime @default(now())
+  startedAt       DateTime  @default(now())
   completedAt     DateTime?
+  deferred        Boolean   @default(false)
 
-  group           Group    @relation(fields: [groupId], references: [id])
+  group           Group     @relation(fields: [groupId], references: [id])
   bids            Bid[]
   payout          Payout?
   transactions    Transaction[]
@@ -92,29 +178,53 @@ model Bid {
 }
 
 model Payout {
-  id                    String   @id @default(uuid())
-  cycleId               String   @unique
-  userId                String
-  payoutAmount          Float
-  dividendPerMember     Float?
+  id                     String   @id @default(uuid())
+  cycleId                String   @unique
+  userId                 String
+  payoutAmount           Float
+  dividendPerMember      Float?
   solidarityContribution Float?
-  processedAt           DateTime @default(now())
+  loanPoolContribution   Float?
+  foremanFee             Float?
+  collectorFee           Float?
+  processedAt            DateTime @default(now())
 
-  cycle                 Cycle    @relation(fields: [cycleId], references: [id])
-  user                  User     @relation(fields: [userId], references: [id])
+  cycle                  Cycle    @relation(fields: [cycleId], references: [id])
+  user                   User     @relation(fields: [userId], references: [id])
+}
+
+model InternalLoan {
+  id           String   @id @default(uuid())
+  groupId      String
+  userId       String
+  amount       Float
+  interestRate Float
+  termWeeks    Int
+  status       LoanStatus @default(ACTIVE)
+  createdAt    DateTime @default(now())
+  repaidAt     DateTime?
+
+  group        Group    @relation(fields: [groupId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+enum LoanStatus {
+  ACTIVE
+  REPAID
+  DEFAULTED
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
+  id          String            @id @default(uuid())
   userId      String
   cycleId     String
   amount      Float
   type        TransactionType
   status      TransactionStatus @default(PENDING)
-  createdAt   DateTime @default(now())
+  createdAt   DateTime          @default(now())
 
-  user        User     @relation(fields: [userId], references: [id])
-  cycle       Cycle    @relation(fields: [cycleId], references: [id])
+  user        User              @relation(fields: [userId], references: [id])
+  cycle       Cycle             @relation(fields: [cycleId], references: [id])
 }
 
 enum TransactionType {
@@ -123,6 +233,12 @@ enum TransactionType {
   DIVIDEND
   LATE_FEE
   COLLATERAL_DEPOSIT
+  LOAN_DISBURSEMENT
+  LOAN_REPAYMENT
+  SOLIDARITY_DISBURSEMENT
+  PENALTY
+  FOREMAN_FEE
+  COLLECTOR_FEE
 }
 
 enum TransactionStatus {
